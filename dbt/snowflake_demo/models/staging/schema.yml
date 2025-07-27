@@ -1,0 +1,20 @@
+version: 2
+
+sources:
+  - name: raw
+    database: SAMPLE_DB
+    schema: RAW
+    tables:
+      - name: orders
+
+models:
+  - name: stg_orders
+    description: "One row per order from the raw.orders table"
+    columns:
+      - name: id
+        description: "Primary key"
+        tests: [not_null, unique]
+      - name: order_amount
+        tests:
+          - not_null
+          # Remove the accepted_values test as it's incorrectly formatted
