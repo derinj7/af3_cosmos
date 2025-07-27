@@ -33,6 +33,7 @@ af3_cosmos/
 ### Multiple DAG Patterns
 - **Full Project DAG**: Runs all dbt models with manifest loading
 - **Manifest Verification**: Validates dbt manifest integrity
+> More patterns coming soon! Feel free to fork and contribute via PR.
 
 ### Advanced Cosmos Configuration
 - **Manifest Loading**: Uses pre-compiled `manifest.json` for faster task generation
