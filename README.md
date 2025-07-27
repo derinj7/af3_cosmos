@@ -13,7 +13,6 @@ This repository provides a comprehensive demo project illustrating the integrati
 af3_cosmos/
 ├── dags/                           # Airflow DAG definitions
 │   ├── dbt_snowflake_dag.py       # Main dbt DAG with manifest loading
-│   ├── dbt_example_models_dag.py  # Example models subset DAG
 │   └── dbt_manifest_verification.py # Manifest validation DAG
 ├── dbt/snowflake_demo/             # dbt project
 │   ├── models/
@@ -33,7 +32,6 @@ af3_cosmos/
 
 ### Multiple DAG Patterns
 - **Full Project DAG**: Runs all dbt models with manifest loading
-- **Filtered DAG**: Executes only tagged models (example_models)
 - **Manifest Verification**: Validates dbt manifest integrity
 
 ### Advanced Cosmos Configuration
@@ -62,7 +60,6 @@ af3_cosmos/
 ```python
 render_config = RenderConfig(
     load_method=LoadMode.DBT_MANIFEST,
-    select=["tag:example_models"]
 )
 ```
 
@@ -89,5 +86,9 @@ execution_config = ExecutionConfig(
 ## 🔍 Available DAGs
 
 1. **dbt_snowflake_cosmos_dag_1**: Main production DAG
-2. **dbt_example_models_dag**: Development/testing subset
-3. **dbt_manifest_verification**: CI/CD validation
+2. **dbt_manifest_verification**: CI/CD validation
+
+## 📚 Explore More
+
+- **[Astronomer Cosmos Documentation](https://astronomer.github.io/astronomer-cosmos/)** → Comprehensive guide for dbt + Airflow integration
+- **[Astronomer Cosmos Source Code](https://github.com/astronomer/astronomer-cosmos)** → Latest features, examples, and community contributions
