@@ -1,0 +1,8 @@
+# dbt artifacts with potentially sensitive data
+**/logs/
+**/target/
+**/*.log
+
+# Airflow local development
+airflow_settings.yaml
+.env*

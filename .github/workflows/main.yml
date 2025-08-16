@@ -1,0 +1,79 @@
+# This is a sample GitHub Actions workflow file for deploying a dbt project to Astronomer.
+# It includes steps to set up Python, install dbt, generate the dbt manifest,
+# and deploy the project to Astronomer using the deploy-action.
+# Modify the following lines to use this workflow in your repository.
+
+name: Astronomer CI - Deploy code
+
+on:
+  push:
+    branches:
+      - main
+
+env:
+  ## Sets Deployment API credentials as environment variables
+  ASTRO_API_TOKEN: ${{ secrets.ASTRO_API_TOKEN }} # I have used a Workspace API Token
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v3
+    
+    - name: Set up Python
+      uses: actions/setup-python@v4
+      with:
+        python-version: '3.10'
+    
+    - name: Install dbt
+      run: |
+        pip install dbt-snowflake==1.9.4
+    
+    - name: Generate dbt manifest
+      run: |
+        cd dbt/snowflake_demo  # Adjust to your dbt project path
+        
+        # Create a minimal dummy profiles.yml
+        mkdir -p ~/.dbt
+        cat > ~/.dbt/profiles.yml << EOF
+        snowflake_demo:
+          target: dev
+          outputs:
+            dev:
+              type: snowflake
+              account: dummy
+              user: dummy
+              password: dummy
+              role: dummy
+              warehouse: dummy
+              database: dummy
+              schema: dummy
+              threads: 4
+        EOF
+        
+        # Install dbt dependencies if packages.yml exists
+        if [ -f packages.yml ]; then
+          dbt deps
+        fi
+        
+        # Generate manifest.json
+        dbt parse
+        
+        # Verify manifest was created
+        if [ ! -f target/manifest.json ]; then
+          echo "Error: manifest.json was not created"
+          exit 1
+        fi
+        
+        # Display manifest info
+        echo "Manifest created successfully:"
+        ls -la target/manifest.json
+        echo "Manifest size: $(wc -c < target/manifest.json) bytes"
+    
+    - name: Deploy to Astro
+      uses: astronomer/deploy-action@v0.10.1
+      with:
+        deployment-id: ${{ vars.DEPLOYMENT_ID }}
+        force: true
+        wake-on-deploy: true
